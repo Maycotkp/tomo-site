@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <title>Tomo — abrir o app</title>
+  <link rel="stylesheet" href="../estilo.css">
+</head>
+<body>
+  <main>
+    <h1>Tomo</h1>
+    <p class="lead" id="titulo">Abrindo o Tomo...</p>
+    <p id="texto">Se o app não abrir sozinho, toque no botão abaixo.</p>
+    <p><a class="botao" id="abrir" href="tomo://auth-callback">Abrir o Tomo</a></p>
+    <p id="plano-b">Se o botão não funcionar, abra o Tomo e entre com seu e-mail e senha. Se esse link era de confirmação de e-mail, a conta já foi confirmada.</p>
+  </main>
+  <script>
+    // Esta página não guarda nem envia nada: só repassa para o app (esquema tomo://) o que o Supabase colocou no endereço.
+    // Depois de ler, limpa o endereço do histórico do navegador.
+    (function () {
+      var busca = location.search || '';
+      var hash = location.hash || '';
+      var params = new URLSearchParams(hash.replace(/^#/, '') || busca.replace(/^\?/, ''));
+      var erro = params.get('error_description') || params.get('error');
+      if (erro) {
+        document.getElementById('titulo').textContent = 'Esse link não vale mais';
+        document.getElementById('texto').textContent = 'O link venceu ou já foi usado. Peça outro no app (Entrar > Esqueci a senha, ou criar a conta de novo).';
+        document.getElementById('abrir').hidden = true;
+        history.replaceState(null, '', location.pathname);
+        return;
+      }
+      var alvo = 'tomo://auth-callback' + busca + hash;
+      document.getElementById('abrir').setAttribute('href', alvo);
+      history.replaceState(null, '', location.pathname);
+      if (busca || hash) setTimeout(function () { location.href = alvo; }, 300);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+:root { color-scheme: dark light; --fundo: #14110f; --texto: #f1e9dc; --mudo: #b9ad9b; --destaque: #e0592a; --borda: #3a322b; }
+@media (prefers-color-scheme: light) { :root { --fundo: #faf6ef; --texto: #231d17; --mudo: #5f5547; --borda: #d9cfbe; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fundo); color: var(--texto); font: 18px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 40rem; margin: 0 auto; padding: 2.5rem 1rem 3rem; }
+h1 { font-size: 2.6rem; margin: 0 0 .5rem; letter-spacing: .04em; }
+h2 { font-size: 1.2rem; margin: 2rem 0 .4rem; }
+.lead { font-size: 1.25rem; color: var(--texto); }
+p { margin: .6rem 0; color: var(--mudo); }
+.aviso { border: 3px solid var(--destaque); padding: .5rem 1.2rem 1rem; margin-top: 2rem; }
+.aviso h2 { margin-top: .8rem; }
+a.botao, button.botao { display: inline-block; min-height: 48px; padding: .75rem 1.2rem; background: var(--destaque); color: #fff; font: inherit; font-weight: 700; text-decoration: none; border: 0; cursor: pointer; }
+a.botao:focus-visible, button.botao:focus-visible { outline: 3px solid var(--texto); outline-offset: 3px; }
+footer p { margin-top: 3rem; font-size: .9rem; }
