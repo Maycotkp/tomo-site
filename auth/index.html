@@ -18,7 +18,7 @@
   <script>
     // Esta página não guarda nem envia nada. O Supabase já confirmou a conta antes de chegar aqui.
     // Confirmar e-mail: só avisa que deu certo (a pessoa entra no app, no EXE ou no site com e-mail e senha).
-    // Trocar a senha: repassa o que veio no endereço para o aplicativo (esquema tomo://) e limpa o endereço do histórico.
+    // Trocar a senha: repassa só o código do link para a tela de senha nova do aplicativo (esquema tomo://) e limpa o endereço do histórico.
     (function () {
       var busca = location.search || '';
       var hash = location.hash || '';
@@ -28,16 +28,17 @@
       var abrir = document.getElementById('abrir');
       var tipo = params.get('type');
       var erro = params.get('error_description') || params.get('error');
-      var alvo = 'tomo://auth-callback' + busca + hash;
+      var codigo = params.get('token_hash');
+      var alvo = 'tomo://esqueci-a-senha' + (codigo ? '?token=' + encodeURIComponent(codigo) : '');
       history.replaceState(null, '', location.pathname);
       if (erro) {
         titulo.textContent = 'Esse link não vale mais';
         texto.textContent = 'O link venceu ou já foi usado. Peça outro no Tomo: para confirmar o e-mail, crie a conta de novo; para a senha, use Esqueci a senha.';
         return;
       }
-      if (tipo === 'recovery') {
+      if (tipo === 'recovery' && codigo) {
         titulo.textContent = 'Trocar a senha';
-        texto.textContent = 'Abrindo o Tomo para você escolher a senha nova. Se não abrir, toque no botão.';
+        texto.textContent = 'Abrindo o Tomo para você escolher a senha nova. Se não abrir, toque no botão. No EXE ou no site, abra o Tomo e use Esqueci a senha.';
         abrir.setAttribute('href', alvo);
         abrir.hidden = false;
         setTimeout(function () { location.href = alvo; }, 300);
