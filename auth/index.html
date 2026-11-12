@@ -28,7 +28,11 @@
       var abrir = document.getElementById('abrir');
       var tipo = params.get('type');
       var erro = params.get('error_description') || params.get('error');
+      // Dois formatos de link de senha: o código do link (token_hash) ou a sessão no endereço (modelo padrão do Supabase).
       var codigo = params.get('token_hash');
+      var acesso = params.get('access_token');
+      var renovacao = params.get('refresh_token');
+      if (!codigo && acesso && renovacao) codigo = 'sessao~' + acesso + '~' + renovacao;
       var alvo = 'tomo://esqueci-a-senha' + (codigo ? '?token=' + encodeURIComponent(codigo) : '');
       history.replaceState(null, '', location.pathname);
       if (erro) {
