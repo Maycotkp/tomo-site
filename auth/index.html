@@ -5,36 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
   <meta name="referrer" content="no-referrer">
-  <title>Tomo — abrir o app</title>
+  <title>Tomo — conta</title>
   <link rel="stylesheet" href="../estilo.css">
 </head>
 <body>
   <main>
     <h1>Tomo</h1>
-    <p class="lead" id="titulo">Abrindo o Tomo...</p>
-    <p id="texto">Se o app não abrir sozinho, toque no botão abaixo.</p>
-    <p><a class="botao" id="abrir" href="tomo://auth-callback">Abrir o Tomo</a></p>
-    <p id="plano-b">Se o botão não funcionar, abra o Tomo e entre com seu e-mail e senha. Se esse link era de confirmação de e-mail, a conta já foi confirmada.</p>
+    <p class="lead" id="titulo">Um instante...</p>
+    <p id="texto"></p>
+    <p><a class="botao" id="abrir" href="tomo://auth-callback" hidden>Abrir o Tomo no aplicativo</a></p>
   </main>
   <script>
-    // Esta página não guarda nem envia nada: só repassa para o app (esquema tomo://) o que o Supabase colocou no endereço.
-    // Depois de ler, limpa o endereço do histórico do navegador.
+    // Esta página não guarda nem envia nada. O Supabase já confirmou a conta antes de chegar aqui.
+    // Confirmar e-mail: só avisa que deu certo (a pessoa entra no app, no EXE ou no site com e-mail e senha).
+    // Trocar a senha: repassa o que veio no endereço para o aplicativo (esquema tomo://) e limpa o endereço do histórico.
     (function () {
       var busca = location.search || '';
       var hash = location.hash || '';
       var params = new URLSearchParams(hash.replace(/^#/, '') || busca.replace(/^\?/, ''));
+      var titulo = document.getElementById('titulo');
+      var texto = document.getElementById('texto');
+      var abrir = document.getElementById('abrir');
+      var tipo = params.get('type');
       var erro = params.get('error_description') || params.get('error');
+      var alvo = 'tomo://auth-callback' + busca + hash;
+      history.replaceState(null, '', location.pathname);
       if (erro) {
-        document.getElementById('titulo').textContent = 'Esse link não vale mais';
-        document.getElementById('texto').textContent = 'O link venceu ou já foi usado. Peça outro no app (Entrar > Esqueci a senha, ou criar a conta de novo).';
-        document.getElementById('abrir').hidden = true;
-        history.replaceState(null, '', location.pathname);
+        titulo.textContent = 'Esse link não vale mais';
+        texto.textContent = 'O link venceu ou já foi usado. Peça outro no Tomo: para confirmar o e-mail, crie a conta de novo; para a senha, use Esqueci a senha.';
         return;
       }
-      var alvo = 'tomo://auth-callback' + busca + hash;
-      document.getElementById('abrir').setAttribute('href', alvo);
-      history.replaceState(null, '', location.pathname);
-      if (busca || hash) setTimeout(function () { location.href = alvo; }, 300);
+      if (tipo === 'recovery') {
+        titulo.textContent = 'Trocar a senha';
+        texto.textContent = 'Abrindo o Tomo para você escolher a senha nova. Se não abrir, toque no botão.';
+        abrir.setAttribute('href', alvo);
+        abrir.hidden = false;
+        setTimeout(function () { location.href = alvo; }, 300);
+        return;
+      }
+      titulo.textContent = 'E-mail confirmado';
+      texto.textContent = 'Sua conta do Tomo está pronta. Volte ao Tomo (aplicativo, EXE ou site) e entre com seu e-mail e senha.';
+      abrir.hidden = false;
     })();
   </script>
 </body>
